@@ -1,0 +1,311 @@
+{
+  "goals": [
+    {
+      "id": "goal_1771468950",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-19 02:42:30.102992+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771468957",
+      "user_intent": "Plan a trip to Japan",
+      "goal_type": "travel",
+      "created_at": "2026-02-19 02:42:37.097986+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771468957",
+      "user_intent": "Research quantum computing",
+      "goal_type": "research",
+      "created_at": "2026-02-19 02:42:37.664834+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771468957",
+      "user_intent": "Hello there",
+      "goal_type": "general",
+      "created_at": "2026-02-19 02:42:37.844013+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771469114",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-19 02:45:14.121421+00:00",
+      "constraints": [],
+      "metadata": {}
+    }
+  ],
+  "journeys": [
+    {
+      "id": "journey_1771497750.103495",
+      "goal_id": "goal_1771468950",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-19T02:42:30.103922",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: payment",
+          "timestamp": "2026-02-19T02:42:30.104219",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "MockTool.execute with payment_context",
+          "timestamp": "2026-02-19T02:42:30.104500",
+          "tool_name": "MockTool",
+          "input_data": {
+            "goal_type": "payment"
+          },
+          "output_data": {
+            "response": "I've processed your credit card payment. Amount: $XXX, Date: Today, Confirmation: #ABC123",
+            "tool_name": "MockTool",
+            "status": "success"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T02:42:30.104774",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 89
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T02:42:30.103526",
+      "completed_at": "2026-02-19T02:42:30.105054",
+      "status": "success"
+    },
+    {
+      "id": "journey_1771497757.098753",
+      "goal_id": "goal_1771468957",
+      "goal_type": "travel",
+      "goal_intent": "Plan a trip to Japan",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Plan a trip to Japan",
+          "timestamp": "2026-02-19T02:42:37.099361",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: travel",
+          "timestamp": "2026-02-19T02:42:37.099745",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "MockTool.execute with travel_context",
+          "timestamp": "2026-02-19T02:42:37.100120",
+          "tool_name": "MockTool",
+          "input_data": {
+            "goal_type": "travel"
+          },
+          "output_data": {
+            "response": "Here's your travel itinerary:\n- Destination: [TBD based on query]\n- Departure: [TBD]\n- Return: [TBD]\n\nNote: This is a mock response for testing.",
+            "tool_name": "MockTool",
+            "status": "success"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T02:42:37.100630",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 144
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T02:42:37.098774",
+      "completed_at": "2026-02-19T02:42:37.101109",
+      "status": "success"
+    },
+    {
+      "id": "journey_1771497757.666073",
+      "goal_id": "goal_1771468957",
+      "goal_type": "research",
+      "goal_intent": "Research quantum computing",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Research quantum computing",
+          "timestamp": "2026-02-19T02:42:37.666727",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: research",
+          "timestamp": "2026-02-19T02:42:37.667399",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "MockTool.execute with research_context",
+          "timestamp": "2026-02-19T02:42:37.668036",
+          "tool_name": "MockTool",
+          "input_data": {
+            "goal_type": "research"
+          },
+          "output_data": {
+            "response": "Research Summary:\n\nBased on available information, I found the following:\n[Your query would be processed here]\n\nNote: This is a mock response for testing.",
+            "tool_name": "MockTool",
+            "status": "success"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T02:42:37.668647",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 154
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T02:42:37.666096",
+      "completed_at": "2026-02-19T02:42:37.669315",
+      "status": "success"
+    },
+    {
+      "id": "journey_1771497757.845073",
+      "goal_id": "goal_1771468957",
+      "goal_type": "general",
+      "goal_intent": "Hello there",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Hello there",
+          "timestamp": "2026-02-19T02:42:37.845628",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: general",
+          "timestamp": "2026-02-19T02:42:37.846142",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "MockTool.execute with general_context",
+          "timestamp": "2026-02-19T02:42:37.846745",
+          "tool_name": "MockTool",
+          "input_data": {
+            "goal_type": "general"
+          },
+          "output_data": {
+            "response": "I've processed your request: 'Hello there'\n\nNote: This is a mock response for testing.",
+            "tool_name": "MockTool",
+            "status": "success"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T02:42:37.847340",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 86
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T02:42:37.845093",
+      "completed_at": "2026-02-19T02:42:37.847849",
+      "status": "success"
+    },
+    {
+      "id": "journey_1771497914.122509",
+      "goal_id": "goal_1771469114",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-19T02:45:14.123200",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: payment",
+          "timestamp": "2026-02-19T02:45:14.123781",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "MockTool.execute with payment_context",
+          "timestamp": "2026-02-19T02:45:14.124358",
+          "tool_name": "MockTool",
+          "input_data": {
+            "goal_type": "payment"
+          },
+          "output_data": {
+            "response": "I've processed your credit card payment. Amount: $XXX, Date: Today, Confirmation: #ABC123",
+            "tool_name": "MockTool",
+            "status": "success"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T02:45:14.124943",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 89
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T02:45:14.122529",
+      "completed_at": "2026-02-19T02:45:14.125529",
+      "status": "success"
+    }
+  ]
+}
