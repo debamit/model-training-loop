@@ -1,6 +1,6 @@
 # Session Checkpoint
 
-## Completed (Skill A MVP)
+## Completed (Skill A MVP + Step 2: LLM Integration)
 
 | Component | File | Status |
 |-----------|------|--------|
@@ -11,6 +11,8 @@
 | AgentLogger | `logger/agent_logger.py` | ✅ |
 | Orchestrator | `agent/orchestrator.py` | ✅ |
 | MockTool | `tools/mock_tool.py` | ✅ |
+| BuilderTool | `tools/builder_tool.py` | ✅ |
+| LLMClient | `tools/llm_client.py` | ✅ |
 | CLI | `cli/main.py` | ✅ |
 | Tests | `tests/test_logger.py` | ✅ |
 | Storage | `weights_n_biases.json` | ✅ Auto-created |
@@ -18,6 +20,13 @@
 ## How to Run
 
 ```bash
+# Mock mode (default - no API key needed)
+python -m cli.main "Pay my credit card bill"
+
+# Real LLM mode (requires API key)
+# 1. Copy .env.example to .env
+# 2. Set USE_REAL_LLM=true
+# 3. Add your MINIMAX_API_KEY
 python -m cli.main "Pay my credit card bill"
 cat weights_n_biases.json
 ```
@@ -27,7 +36,7 @@ cat weights_n_biases.json
 1. User runs CLI with a query
 2. Orchestrator extracts intent → logs goal
 3. Orchestrator creates journey → logs steps
-4. MockTool returns canned response
+4. BuilderTool executes (mock or real LLM)
 5. All data stored in `weights_n_biases.json`
 
 ## Goal Types Supported
@@ -42,7 +51,7 @@ cat weights_n_biases.json
 ## Next Steps (Priority Order)
 
 1. LangGraph integration (state machine) - deferred
-2. Real LLM calls (OpenAI/Anthropic) - deferred
+2. ~~Real LLM calls (OpenAI/Anthropic)~~ - ✅ DONE
 3. Skill B (Builder - day mode) - deferred
 4. Skill D (Auditor - verification) - deferred
 5. Skill F (Nightly replay/self-training) - deferred
@@ -66,5 +75,6 @@ weights_n_biases.json
 
 - All tests pass (`PYTHONPATH=. python tests/test_logger.py`)
 - CLI works for all 4 goal types
-- No real LLM integration yet (mock responses only)
+- LLM integration complete - toggle with USE_REAL_LLM in .env
+- Using MiniMax M2.5 via Anthropic-compatible API
 - No LangGraph state machine yet

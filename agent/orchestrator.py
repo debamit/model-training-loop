@@ -1,13 +1,13 @@
 from datetime import datetime, timezone
 from logger import AgentLogger
 from schemas import Goal, GoalType
-from tools import MockTool
+from tools import BuilderTool
 
 
 class AgentOrchestrator:
     def __init__(self, storage_path: str = "weights_n_biases.json"):
         self.logger = AgentLogger(storage_path=storage_path)
-        self.tool = MockTool()
+        self.tool = BuilderTool()
 
     def _detect_intent(self, user_input: str) -> str:
         user_lower = user_input.lower()
@@ -51,15 +51,15 @@ class AgentOrchestrator:
         )
 
         tool_result = self.tool.execute(
-            goal_type=goal_type, context={"query": user_input}
+            user_query=user_input, context={"goal_type": goal_type}
         )
 
         self.logger.add_step(
             journey_id=journey_id,
             step_type="tool_call",
-            description=f"MockTool.execute with {goal_type}_context",
-            tool_name="MockTool",
-            input_data={"goal_type": goal_type},
+            description=f"BuilderTool.execute for goal_type: {goal_type}",
+            tool_name=tool_result.get("tool_name", "BuilderTool"),
+            input_data={"user_query": user_input, "goal_type": goal_type},
             output_data=tool_result,
         )
 

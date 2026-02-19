@@ -39,6 +39,46 @@
       "created_at": "2026-02-19 02:45:14.121421+00:00",
       "constraints": [],
       "metadata": {}
+    },
+    {
+      "id": "goal_1771479218",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-19 05:33:38.466919+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771479545",
+      "user_intent": "Hello, how are you?",
+      "goal_type": "general",
+      "created_at": "2026-02-19 05:39:05.222885+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771479612",
+      "user_intent": "Hello, how are you?",
+      "goal_type": "general",
+      "created_at": "2026-02-19 05:40:12.422212+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771479652",
+      "user_intent": "Hello, how are you?",
+      "goal_type": "general",
+      "created_at": "2026-02-19 05:40:52.569393+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771479716",
+      "user_intent": "Hello, how are you?",
+      "goal_type": "general",
+      "created_at": "2026-02-19 05:41:56.252772+00:00",
+      "constraints": [],
+      "metadata": {}
     }
   ],
   "journeys": [
@@ -305,6 +345,277 @@
       ],
       "started_at": "2026-02-19T02:45:14.122529",
       "completed_at": "2026-02-19T02:45:14.125529",
+      "status": "success"
+    },
+    {
+      "id": "journey_1771508018.469287",
+      "goal_id": "goal_1771479218",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-19T05:33:38.470749",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: payment",
+          "timestamp": "2026-02-19T05:33:38.471769",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "BuilderTool.execute for goal_type: payment",
+          "timestamp": "2026-02-19T05:33:38.472755",
+          "tool_name": "MockTool",
+          "input_data": {
+            "user_query": "Pay my credit card bill",
+            "goal_type": "payment"
+          },
+          "output_data": {
+            "response": "[MOCK MODE] Processed: Pay my credit card bill",
+            "tool_name": "MockTool",
+            "status": "success"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T05:33:38.473702",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 46
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T05:33:38.469381",
+      "completed_at": "2026-02-19T05:33:38.474612",
+      "status": "success"
+    },
+    {
+      "id": "journey_1771508345.224076",
+      "goal_id": "goal_1771479545",
+      "goal_type": "general",
+      "goal_intent": "Hello, how are you?",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Hello, how are you?",
+          "timestamp": "2026-02-19T05:39:05.224838",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: general",
+          "timestamp": "2026-02-19T05:39:05.225536",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "BuilderTool.execute for goal_type: general",
+          "timestamp": "2026-02-19T05:39:05.226239",
+          "tool_name": "MockTool",
+          "input_data": {
+            "user_query": "Hello, how are you?",
+            "goal_type": "general"
+          },
+          "output_data": {
+            "response": "[MOCK MODE] Processed: Hello, how are you?",
+            "tool_name": "MockTool",
+            "status": "success"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T05:39:05.226989",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 42
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T05:39:05.224101",
+      "completed_at": "2026-02-19T05:39:05.227804",
+      "status": "success"
+    },
+    {
+      "id": "journey_1771508412.423567",
+      "goal_id": "goal_1771479612",
+      "goal_type": "general",
+      "goal_intent": "Hello, how are you?",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Hello, how are you?",
+          "timestamp": "2026-02-19T05:40:12.424425",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: general",
+          "timestamp": "2026-02-19T05:40:12.425230",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "BuilderTool.execute for goal_type: general",
+          "timestamp": "2026-02-19T05:40:14.496539",
+          "tool_name": "MiniMax-LLM",
+          "input_data": {
+            "user_query": "Hello, how are you?",
+            "goal_type": "general"
+          },
+          "output_data": {
+            "response": "Error: Error code: 500 - {'type': 'error', 'error': {'type': 'api_error', 'message': 'insufficient balance (1008)'}, 'request_id': '05e5d53fb60252eea2e0d94500cb2d62'}",
+            "tool_name": "MiniMax-LLM",
+            "status": "error"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T05:40:14.498402",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 166
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T05:40:12.423584",
+      "completed_at": "2026-02-19T05:40:14.499358",
+      "status": "success"
+    },
+    {
+      "id": "journey_1771508452.570779",
+      "goal_id": "goal_1771479652",
+      "goal_type": "general",
+      "goal_intent": "Hello, how are you?",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Hello, how are you?",
+          "timestamp": "2026-02-19T05:40:52.571747",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: general",
+          "timestamp": "2026-02-19T05:40:52.572634",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "BuilderTool.execute for goal_type: general",
+          "timestamp": "2026-02-19T05:40:55.198305",
+          "tool_name": "MiniMax-LLM",
+          "input_data": {
+            "user_query": "Hello, how are you?",
+            "goal_type": "general"
+          },
+          "output_data": {
+            "response": "Error: Error code: 500 - {'type': 'error', 'error': {'type': 'api_error', 'message': 'insufficient balance (1008)'}, 'request_id': '05e5d568e56cae69fff6046417e1fd66'}",
+            "tool_name": "MiniMax-LLM",
+            "status": "error"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T05:40:55.200284",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 166
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T05:40:52.570796",
+      "completed_at": "2026-02-19T05:40:55.201317",
+      "status": "success"
+    },
+    {
+      "id": "journey_1771508516.254294",
+      "goal_id": "goal_1771479716",
+      "goal_type": "general",
+      "goal_intent": "Hello, how are you?",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Hello, how are you?",
+          "timestamp": "2026-02-19T05:41:56.255471",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "llm_response",
+          "description": "Intent classified as: general",
+          "timestamp": "2026-02-19T05:41:56.256440",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "tool_call",
+          "description": "BuilderTool.execute for goal_type: general",
+          "timestamp": "2026-02-19T05:42:03.387633",
+          "tool_name": "MiniMax-LLM",
+          "input_data": {
+            "user_query": "Hello, how are you?",
+            "goal_type": "general"
+          },
+          "output_data": {
+            "response": "I'm doing well, thanks for asking! How can I help you today?",
+            "thinking": "The user is asking a simple greeting question about how I am. I should respond in a friendly, concise manner.",
+            "tool_name": "MiniMax-LLM",
+            "status": "success"
+          }
+        },
+        {
+          "step_type": "verification",
+          "description": "Response sanity check passed",
+          "timestamp": "2026-02-19T05:42:03.388937",
+          "tool_name": "System",
+          "input_data": {
+            "response_length": 60
+          },
+          "output_data": {
+            "valid": true
+          }
+        }
+      ],
+      "started_at": "2026-02-19T05:41:56.254311",
+      "completed_at": "2026-02-19T05:42:03.390063",
       "status": "success"
     }
   ]
