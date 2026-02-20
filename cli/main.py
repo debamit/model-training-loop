@@ -239,6 +239,11 @@ def main():
         "--list-sessions", action="store_true", help="List available sessions"
     )
     parser.add_argument(
+        "--no-export",
+        action="store_true",
+        help="Disable auto-export of conversation to conversation.json",
+    )
+    parser.add_argument(
         "--export-messages",
         nargs="?",
         const="conversation.json",
@@ -253,6 +258,8 @@ def main():
     if args.list_sessions:
         list_sessions(checkpointer)
         return
+
+    export_filepath = None if args.no_export else "conversation.json"
 
     if args.session_id:
         print(f"Resuming session: {args.session_id}")
@@ -273,14 +280,14 @@ def main():
         response = result["messages"][-1].content
         print(f"\nAssistant: {response}\n")
 
-        if args.export_messages:
-            export_messages(agent, config, args.export_messages)
+        if export_filepath:
+            export_messages(agent, config, export_filepath)
 
     elif args.query:
-        run_single_query(agent, checkpointer, args.query, args.export_messages)
+        run_single_query(agent, checkpointer, args.query, export_filepath)
 
     else:
-        run_interactive(agent, checkpointer, args.export_messages)
+        run_interactive(agent, checkpointer, export_filepath)
 
 
 if __name__ == "__main__":
