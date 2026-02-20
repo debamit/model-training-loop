@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from logger import AgentLogger
 from schemas import Goal, GoalType
 from tools import BuilderTool
+from tools.schema_extractor import extract_schema
 
 
 class AgentOrchestrator:
@@ -22,7 +23,13 @@ class AgentOrchestrator:
             return GoalType.GENERAL.value
 
     def run(self, user_input: str) -> dict:
-        goal_type = self._detect_intent(user_input)
+        intent_result = self.tool.execute(
+            user_query=user_input, context={"mode": "classify_only"}
+        )
+
+        goal_type = intent_result.get("goal_type", "general")
+        confidence = intent_result.get("confidence", 0.5)
+        reasoning = intent_result.get("reasoning", "")
 
         goal = Goal(
             id=f"goal_{int(datetime.now(timezone.utc).timestamp())}",
@@ -30,7 +37,7 @@ class AgentOrchestrator:
             goal_type=GoalType(goal_type),
             created_at=datetime.now(timezone.utc),
             constraints=[],
-            metadata={},
+            metadata={"confidence": confidence, "reasoning": reasoning},
         )
         goal_id = self.logger.log_goal(goal)
 
@@ -47,12 +54,14 @@ class AgentOrchestrator:
         self.logger.add_step(
             journey_id=journey_id,
             step_type="llm_response",
-            description=f"Intent classified as: {goal_type}",
+            description=f"Intent classified as: {goal_type} (confidence: {confidence})",
         )
 
         tool_result = self.tool.execute(
             user_query=user_input, context={"goal_type": goal_type}
         )
+
+        response_schema = extract_schema(tool_result)
 
         self.logger.add_step(
             journey_id=journey_id,
@@ -60,7 +69,7 @@ class AgentOrchestrator:
             description=f"BuilderTool.execute for goal_type: {goal_type}",
             tool_name=tool_result.get("tool_name", "BuilderTool"),
             input_data={"user_query": user_input, "goal_type": goal_type},
-            output_data=tool_result,
+            output_data={"schema": response_schema},
         )
 
         self.logger.add_step(
