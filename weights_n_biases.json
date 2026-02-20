@@ -134,6 +134,118 @@
         "confidence": 1.0,
         "reasoning": "The query explicitly mentions planning a trip to India, which falls under travel planning including potential flights, hotels, and vacation arrangements."
       }
+    },
+    {
+      "id": "goal_1771558736",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-20 03:38:56.902092+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771558745",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-20 03:39:05.385968+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771558906",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-20 03:41:46.615205+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771558965",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-20 03:42:45.199373+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771558987",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-20 03:43:07.987004+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771558996",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-20 03:43:16.417141+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771559247",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-20 03:47:27.551768+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771559470",
+      "user_intent": "Pay my credit card bill",
+      "goal_type": "payment",
+      "created_at": "2026-02-20 03:51:10.999472+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771559819",
+      "user_intent": "Plan a trip to Japan",
+      "goal_type": "travel",
+      "created_at": "2026-02-20 03:56:59.909918+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771560141",
+      "user_intent": "Travel to Japan - get country information",
+      "goal_type": "travel",
+      "created_at": "2026-02-20 04:02:21.556390+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771560182",
+      "user_intent": "Get country information for Japan travel planning",
+      "goal_type": "travel",
+      "created_at": "2026-02-20 04:03:02.003269+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771560249",
+      "user_intent": "Travel to Japan - get country information",
+      "goal_type": "travel",
+      "created_at": "2026-02-20 04:04:09.281469+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771560327",
+      "user_intent": "Travel to Japan - get country information",
+      "goal_type": "travel",
+      "created_at": "2026-02-20 04:05:27.612579+00:00",
+      "constraints": [],
+      "metadata": {}
+    },
+    {
+      "id": "goal_1771560362",
+      "user_intent": "Get country information for Japan to help plan a trip",
+      "goal_type": "travel",
+      "created_at": "2026-02-20 04:06:02.556607+00:00",
+      "constraints": [],
+      "metadata": {}
     }
   ],
   "journeys": [
@@ -1771,6 +1883,242 @@
       "started_at": "2026-02-20T01:40:11.097358",
       "completed_at": "2026-02-20T01:40:22.562925",
       "status": "success"
+    },
+    {
+      "id": "journey_1771587536.906248",
+      "goal_id": "goal_1771558736",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-20T03:38:56.909780",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        }
+      ],
+      "started_at": "2026-02-20T03:38:56.906271",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771587545.390355",
+      "goal_id": "goal_1771558745",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-20T03:39:05.394147",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        }
+      ],
+      "started_at": "2026-02-20T03:39:05.390370",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771587706.619716",
+      "goal_id": "goal_1771558906",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-20T03:41:46.622887",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        }
+      ],
+      "started_at": "2026-02-20T03:41:46.619733",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771587765.204113",
+      "goal_id": "goal_1771558965",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-20T03:42:45.207460",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        }
+      ],
+      "started_at": "2026-02-20T03:42:45.204134",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771587787.991933",
+      "goal_id": "goal_1771558987",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-20T03:43:07.996662",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        }
+      ],
+      "started_at": "2026-02-20T03:43:07.991979",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771587796.421421",
+      "goal_id": "goal_1771558996",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-20T03:43:16.425040",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        }
+      ],
+      "started_at": "2026-02-20T03:43:16.421437",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771588047.557662",
+      "goal_id": "goal_1771559247",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [
+        {
+          "step_type": "user_input",
+          "description": "User request: Pay my credit card bill",
+          "timestamp": "2026-02-20T03:47:27.561388",
+          "tool_name": null,
+          "input_data": null,
+          "output_data": null
+        },
+        {
+          "step_type": "assistant_response",
+          "description": "Assistant response",
+          "timestamp": "2026-02-20T03:47:47.422241",
+          "tool_name": "deep_agent",
+          "input_data": null,
+          "output_data": null
+        }
+      ],
+      "started_at": "2026-02-20T03:47:27.557681",
+      "completed_at": "2026-02-20T03:47:47.429791",
+      "status": "completed"
+    },
+    {
+      "id": "journey_1771588271.008604",
+      "goal_id": "goal_1771559470",
+      "goal_type": "payment",
+      "goal_intent": "Pay my credit card bill",
+      "steps": [],
+      "started_at": "2026-02-20T03:51:11.008625",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771588619.92383",
+      "goal_id": "goal_1771559819",
+      "goal_type": "travel",
+      "goal_intent": "Plan a trip to Japan",
+      "steps": [],
+      "started_at": "2026-02-20T03:56:59.923859",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771588941.567759",
+      "goal_id": "goal_1771560141",
+      "goal_type": "travel",
+      "goal_intent": "Travel to Japan - get country information",
+      "steps": [],
+      "started_at": "2026-02-20T04:02:21.567785",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771588982.016888",
+      "goal_id": "goal_1771560182",
+      "goal_type": "travel",
+      "goal_intent": "Get country information for Japan travel planning",
+      "steps": [],
+      "started_at": "2026-02-20T04:03:02.016920",
+      "completed_at": "2026-02-20T04:03:09.468067",
+      "status": "completed"
+    },
+    {
+      "id": "journey_1771589049.291709",
+      "goal_id": "goal_1771560249",
+      "goal_type": "travel",
+      "goal_intent": "Travel to Japan - get country information",
+      "steps": [],
+      "started_at": "2026-02-20T04:04:09.291735",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771589127.626958",
+      "goal_id": "goal_1771560327",
+      "goal_type": "travel",
+      "goal_intent": "Travel to Japan - get country information",
+      "steps": [],
+      "started_at": "2026-02-20T04:05:27.626985",
+      "completed_at": null,
+      "status": "in_progress"
+    },
+    {
+      "id": "journey_1771589162.569936",
+      "goal_id": "goal_1771560362",
+      "goal_type": "travel",
+      "goal_intent": "Get country information for Japan to help plan a trip",
+      "steps": [
+        {
+          "step_type": "tool_call",
+          "description": "Tool: log_goal",
+          "timestamp": "2026-02-20T04:06:02.575284+00:00",
+          "tool_name": "log_goal",
+          "input_data": null,
+          "output_data": {
+            "schema": {
+              "type": "unknown"
+            }
+          }
+        },
+        {
+          "step_type": "tool_call",
+          "description": "Tool: get_country_info",
+          "timestamp": "2026-02-20T04:06:03.279771+00:00",
+          "tool_name": "get_country_info",
+          "input_data": null,
+          "output_data": {
+            "schema": {
+              "type": "unknown"
+            }
+          }
+        }
+      ],
+      "started_at": "2026-02-20T04:06:02.569967",
+      "completed_at": null,
+      "status": "in_progress"
     }
   ]
 }
