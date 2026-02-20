@@ -1,14 +1,8 @@
-Let's make the Orchestrator a bit more feature complete.
+Now that we have Deepagents implemented 
 
-Features:
+I am rethinking my strategy here. 
+May be it's not the best idea to go against the framework of langchain deepagent.
+I think the best strategy is to let langchain keep loggin the
+HumanMessage, AiMessage and ToolMessage in the List[BaseMessage].
 
- update intent detection to be driven by LLM.
- Suggest implementation options following my workflow philosophy.
-
-
- Integrate with an actual tool call.
- prefer to integrate with an api that is free and returns structured api and read only (just GET)
-
- 
-
-
+Stop loggin to weights_n_biases.md .

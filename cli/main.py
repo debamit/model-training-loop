@@ -1,4 +1,5 @@
 import argparse
+import json
 import os
 import sys
 import uuid
@@ -46,8 +47,30 @@ from agent.logging_middleware import (
     get_current_session,
 )
 from agent.country_tool import get_country_info
-from agent.schema_logging_middleware import SchemaLoggingMiddleware
-from logger import AgentLogger
+
+
+def export_messages(agent, config, filepath: str):
+    """Export messages to a JSON file."""
+    state = agent.get_state(config)
+    if not state or not state.values.get("messages"):
+        print("No messages to export")
+        return
+
+    messages = []
+    for msg in state.values["messages"]:
+        msg_dict = {
+            "type": msg.type,
+            "content": msg.content,
+        }
+        if hasattr(msg, "name") and msg.name:
+            msg_dict["name"] = msg.name
+        if hasattr(msg, "tool_call_id") and msg.tool_call_id:
+            msg_dict["tool_call_id"] = msg.tool_call_id
+        messages.append(msg_dict)
+
+    with open(filepath, "w") as f:
+        json.dump(messages, f, indent=2, default=str)
+    print(f"Messages exported to {filepath}")
 
 
 def detect_goal_type(user_input: str) -> str:
@@ -84,8 +107,6 @@ For travel planning, use the get_country_info tool to get country details like c
 
 Always be helpful and friendly. Use available tools (read_file, write_file, etc.) to assist the user."""
 
-    schema_middleware = SchemaLoggingMiddleware()
-
     agent = create_deep_agent(
         system_prompt=system_prompt,
         checkpointer=checkpointer,
@@ -97,18 +118,15 @@ Always be helpful and friendly. Use available tools (read_file, write_file, etc.
             get_current_session,
             get_country_info,
         ],
-        middleware=[schema_middleware],
     )
 
     return agent
 
 
-def run_interactive(agent, checkpointer, storage_path):
+def run_interactive(agent, checkpointer, export_filepath=None):
     """Run an interactive chat session."""
     session_id = str(uuid.uuid4())[:8]
     config = {"configurable": {"thread_id": session_id}}
-
-    logger = AgentLogger(storage_path=storage_path)
 
     print(f"=== New Session Started ===")
     print(f"Session ID: {session_id}")
@@ -122,6 +140,8 @@ def run_interactive(agent, checkpointer, storage_path):
 
             if user_input.lower() in ["quit", "exit"]:
                 print("Session ended.")
+                if export_filepath:
+                    export_messages(agent, config, export_filepath)
                 break
 
             if user_input.lower() == "history":
@@ -163,7 +183,7 @@ def run_interactive(agent, checkpointer, storage_path):
     return session_id
 
 
-def run_single_query(agent, checkpointer, user_input, storage_path):
+def run_single_query(agent, checkpointer, user_input, export_filepath=None):
     """Run a single query (one-shot mode)."""
     session_id = str(uuid.uuid4())[:8]
     config = {"configurable": {"thread_id": session_id}}
@@ -179,6 +199,11 @@ def run_single_query(agent, checkpointer, user_input, storage_path):
     print(response)
     print("\n=== JOURNEY COMPLETE ===")
     print(f"Session ID: {session_id}")
+
+    if export_filepath:
+        export_messages(agent, config, export_filepath)
+
+    return session_id
 
     return session_id
 
@@ -214,10 +239,11 @@ def main():
         "--list-sessions", action="store_true", help="List available sessions"
     )
     parser.add_argument(
-        "--storage",
-        type=str,
-        default="weights_n_biases.json",
-        help="Path to storage file (default: weights_n_biases.json)",
+        "--export-messages",
+        nargs="?",
+        const="conversation.json",
+        metavar="FILE",
+        help="Export messages to JSON file (default: conversation.json)",
     )
 
     args = parser.parse_args()
@@ -247,11 +273,14 @@ def main():
         response = result["messages"][-1].content
         print(f"\nAssistant: {response}\n")
 
+        if args.export_messages:
+            export_messages(agent, config, args.export_messages)
+
     elif args.query:
-        run_single_query(agent, checkpointer, args.query, args.storage)
+        run_single_query(agent, checkpointer, args.query, args.export_messages)
 
     else:
-        run_interactive(agent, checkpointer, args.storage)
+        run_interactive(agent, checkpointer, args.export_messages)
 
 
 if __name__ == "__main__":
