@@ -54,3 +54,4 @@ Thumbs.db
 # Misc
 *.swp
 *~
+weights_n_biases.json
