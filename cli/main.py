@@ -10,35 +10,7 @@ from langgraph.checkpoint.memory import InMemorySaver
 
 load_dotenv("/home/debamit007/model-training-loop/.env")
 
-from langchain.chat_models import init_chat_model
-
-MINIMAX_API_KEY = os.getenv("MINIMAX_API_KEY")
-ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
-chat_model = None
-
-if MINIMAX_API_KEY:
-    os.environ["ANTHROPIC_BASE_URL"] = "https://api.minimax.io/anthropic"
-    os.environ["ANTHROPIC_API_KEY"] = MINIMAX_API_KEY
-    chat_model = init_chat_model(model="MiniMax-M2.5", model_provider="anthropic")
-    print("Using MiniMax API (Anthropic-compatible)")
-elif ANTHROPIC_API_KEY:
-    os.environ["ANTHROPIC_API_KEY"] = ANTHROPIC_API_KEY
-    chat_model = init_chat_model(
-        model="claude-sonnet-4-5-20250929", model_provider="anthropic"
-    )
-    print("Using Anthropic API")
-elif OPENAI_API_KEY:
-    os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
-    chat_model = init_chat_model(model="gpt-4o", model_provider="openai")
-    print("Using OpenAI API")
-else:
-    print(
-        "Warning: No API key found. Set MINIMAX_API_KEY, ANTHROPIC_API_KEY, or OPENAI_API_KEY"
-    )
-
-
+from config import create_chat_model
 from deepagents import create_deep_agent
 from agent.logging_middleware import (
     log_goal,
@@ -87,8 +59,12 @@ def detect_goal_type(user_input: str) -> str:
         return "general"
 
 
-def create_agent(checkpointer=None):
+def create_agent(checkpointer=None, chat_model=None):
     """Create a deep agent with logging tools."""
+    if chat_model is None:
+        from config import create_chat_model
+
+        chat_model = create_chat_model()
     system_prompt = """You are a helpful personal AI assistant. 
 
 When the user tells you something they want to do (like "pay my bill", "plan a trip", "research something"):
@@ -250,6 +226,26 @@ def main():
         metavar="FILE",
         help="Export messages to JSON file (default: conversation.json)",
     )
+    parser.add_argument(
+        "--model",
+        type=str,
+        help="Override model name from config",
+    )
+    parser.add_argument(
+        "--provider",
+        type=str,
+        help="Override provider from config (minimax, anthropic, openai, custom)",
+    )
+    parser.add_argument(
+        "--api-key",
+        type=str,
+        help="Override API key from config",
+    )
+    parser.add_argument(
+        "--api-base",
+        type=str,
+        help="Override API base URL (for custom provider)",
+    )
 
     args = parser.parse_args()
 
@@ -261,10 +257,14 @@ def main():
 
     export_filepath = None if args.no_export else "conversation.json"
 
-    if args.session_id:
-        print(f"Resuming session: {args.session_id}")
+    chat_model = create_chat_model(
+        model=args.model,
+        provider=args.provider,
+        api_key=args.api_key,
+        api_base=args.api_base,
+    )
 
-    agent = create_agent(checkpointer=checkpointer)
+    agent = create_agent(checkpointer=checkpointer, chat_model=chat_model)
 
     if args.session_id:
         print(f"Resuming session: {args.session_id}")

@@ -1,0 +1,24 @@
+{
+  "providers": {
+    "minimax": {
+      "apiKey": "sk-cp-pXxGHLe-9c1vz8U5Eu-Ld15IUuOS-M0bwdASZu0rdvM0D4tM1eldH_m5d9f5Qb5hbgz03g2veLVz4UhhlorvMvUwTCScvNQcw6vTn2TSwqCrsRfpboiRNo8",
+      "apiBase": "https://api.minimax.io/anthropic"
+    },
+    "anthropic": {
+      "apiKey": ""
+    },
+    "openai": {
+      "apiKey": ""
+    },
+    "custom": {
+      "apiKey": "",
+      "apiBase": ""
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": "MiniMax-M2.5",
+      "provider": "minimax"
+    }
+  }
+}
