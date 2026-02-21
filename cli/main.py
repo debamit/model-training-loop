@@ -6,12 +6,12 @@ import uuid
 from datetime import datetime
 
 from dotenv import load_dotenv
-from langgraph.checkpoint.memory import InMemorySaver
 
 load_dotenv("/home/debamit007/model-training-loop/.env")
 
 from config import create_chat_model
 from deepagents import create_deep_agent
+from langgraph.checkpoint.sqlite import SqliteSaver
 from agent.logging_middleware import (
     log_goal,
     log_step,
@@ -30,14 +30,20 @@ def export_messages(agent, config, filepath: str):
 
     messages = []
     for msg in state.values["messages"]:
-        msg_dict = {
-            "type": msg.type,
-            "content": msg.content,
-        }
-        if hasattr(msg, "name") and msg.name:
-            msg_dict["name"] = msg.name
-        if hasattr(msg, "tool_call_id") and msg.tool_call_id:
-            msg_dict["tool_call_id"] = msg.tool_call_id
+        if isinstance(msg, str):
+            msg_dict = {
+                "type": "unknown",
+                "content": msg,
+            }
+        else:
+            msg_dict = {
+                "type": msg.type,
+                "content": msg.content,
+            }
+            if hasattr(msg, "name") and msg.name:
+                msg_dict["name"] = msg.name
+            if hasattr(msg, "tool_call_id") and msg.tool_call_id:
+                msg_dict["tool_call_id"] = msg.tool_call_id
         messages.append(msg_dict)
 
     with open(filepath, "w") as f:
@@ -187,10 +193,19 @@ def run_single_query(agent, checkpointer, user_input, export_filepath=None):
 def list_sessions(checkpointer):
     """List all available sessions."""
     print("=== Available Sessions ===")
-    print("(In-memory - only shows current process sessions)")
-    print()
-    print("Use --session-id to resume a session")
-    print("Use --new-session to start a fresh session")
+    threads = checkpointer.list_all_threads()
+    if not threads:
+        print("No sessions found.")
+        print("Use --new-session to start a fresh session")
+        return
+    for thread in threads:
+        print(f"Session ID: {thread['thread_id']}")
+        print(f"  Checkpoints: {thread['num_checkpoints']}")
+        if thread.get("last_checkpoint"):
+            print(
+                f"  Last updated: {thread['last_checkpoint'].get('created_at', 'unknown')}"
+            )
+        print()
 
 
 def main():
@@ -210,9 +225,6 @@ def main():
         "--new-session",
         action="store_true",
         help="Start a new session (generates new session ID)",
-    )
-    parser.add_argument(
-        "--list-sessions", action="store_true", help="List available sessions"
     )
     parser.add_argument(
         "--no-export",
@@ -249,45 +261,40 @@ def main():
 
     args = parser.parse_args()
 
-    checkpointer = InMemorySaver()
+    with SqliteSaver.from_conn_string("sessions/checkpoints.db") as checkpointer:
+        export_filepath = None if args.no_export else "conversation.json"
 
-    if args.list_sessions:
-        list_sessions(checkpointer)
-        return
-
-    export_filepath = None if args.no_export else "conversation.json"
-
-    chat_model = create_chat_model(
-        model=args.model,
-        provider=args.provider,
-        api_key=args.api_key,
-        api_base=args.api_base,
-    )
-
-    agent = create_agent(checkpointer=checkpointer, chat_model=chat_model)
-
-    if args.session_id:
-        print(f"Resuming session: {args.session_id}")
-        config = {"configurable": {"thread_id": args.session_id}}
-
-        user_input = args.query or input("You: ").strip()
-
-        result = agent.invoke(
-            {"messages": [{"role": "user", "content": user_input}]},
-            config=config,
+        chat_model = create_chat_model(
+            model=args.model,
+            provider=args.provider,
+            api_key=args.api_key,
+            api_base=args.api_base,
         )
 
-        response = result["messages"][-1].content
-        print(f"\nAssistant: {response}\n")
+        agent = create_agent(checkpointer=checkpointer, chat_model=chat_model)
 
-        if export_filepath:
-            export_messages(agent, config, export_filepath)
+        if args.session_id:
+            print(f"Resuming session: {args.session_id}")
+            config = {"configurable": {"thread_id": args.session_id}}
 
-    elif args.query:
-        run_single_query(agent, checkpointer, args.query, export_filepath)
+            user_input = args.query or input("You: ").strip()
 
-    else:
-        run_interactive(agent, checkpointer, export_filepath)
+            result = agent.invoke(
+                {"messages": [{"role": "user", "content": user_input}]},
+                config=config,
+            )
+
+            response = result["messages"][-1].content
+            print(f"\nAssistant: {response}\n")
+
+            if export_filepath:
+                export_messages(agent, config, export_filepath)
+
+        elif args.query:
+            run_single_query(agent, checkpointer, args.query, export_filepath)
+
+        else:
+            run_interactive(agent, checkpointer, export_filepath)
 
 
 if __name__ == "__main__":

@@ -1,60 +1,114 @@
 # Session Checkpoint
 
-## Completed (Skill A MVP + Step 2: LLM Integration)
+## Completed (as of Feb 20, 2026)
 
 | Component | File | Status |
 |-----------|------|--------|
-| Project Overview | `AGENT.md` | ✅ |
-| Workflow Philosophy | `WORKFLOW.md` | ✅ |
-| Goal Schema | `schemas/goal.py` | ✅ |
-| Journey Schema | `schemas/journey.py` | ✅ |
-| AgentLogger | `logger/agent_logger.py` | ✅ |
-| Orchestrator | `agent/orchestrator.py` | ✅ |
-| MockTool | `tools/mock_tool.py` | ✅ |
-| BuilderTool | `tools/builder_tool.py` | ✅ |
-| LLMClient | `tools/llm_client.py` | ✅ |
-| CLI | `cli/main.py` | ✅ |
-| Tests | `tests/test_logger.py` | ✅ |
-| Storage | `weights_n_biases.json` | ✅ Auto-created |
+| DeepAgent Integration | `cli/main.py` | ✅ |
+| MiniMax API (Anthropic-compatible) | `.env`, `config.json` | ✅ |
+| Configurable Model/Provider | `config.json`, `config/__init__.py` | ✅ NEW |
+| JSON-based Persistent Storage | `storage/json_checkpointer.py` | ✅ NEW |
+| Session Persistence | `sessions/` directory | ✅ NEW |
+| CLI with session management | `cli/main.py` | ✅ |
+
+---
+
+## MVP 001 Plan (Completed)
+
+### ✅ Task 1: Configurable Model/Provider
+- Created `config.json` with MiniMax, Anthropic, OpenAI, Custom providers
+- Created `config/__init__.py` with:
+  - `load_config()` - loads JSON config
+  - `get_provider_config()` - gets provider settings
+  - `get_model_config()` - gets model/provider defaults
+  - `create_chat_model()` - creates LangChain chat model
+- Priority: CLI flags > config.json > env vars
+
+### ✅ Task 2: Persistent Storage
+- Created custom `JsonCheckpointSaver` class implementing `BaseCheckpointSaver`
+- Stores checkpoints to JSON files in `sessions/<thread_id>/`
+- Replaced `InMemorySaver` with `JsonCheckpointSaver`
+- Sessions persist across process restarts
+- Added `--list-sessions` to show stored sessions
+
+---
+
+## Current File Structure
+
+```
+config.json              # Provider/model config (MiniMax default)
+config/__init__.py       # Config loader module
+storage/
+  __init__.py
+  json_checkpointer.py   # JsonCheckpointSaver class
+sessions/               # Persisted session data
+  <thread_id>/
+    checkpoints.json    # List of all checkpoints
+    <uuid>.json        # Checkpoint data
+    <uuid>.meta.json   # Metadata
+    writes.json        # Pending writes
+cli/main.py             # CLI with session management
+agent/
+  logging_middleware.py
+  country_tool.py
+schemas/
+  goal.py
+  journey.py
+```
+
+---
 
 ## How to Run
 
 ```bash
-# Mock mode (default - no API key needed)
-python -m cli.main "Pay my credit card bill"
+# List sessions
+python -m cli.main --list-sessions
 
-# Real LLM mode (requires API key)
-# 1. Copy .env.example to .env
-# 2. Set USE_REAL_LLM=true
-# 3. Add your MINIMAX_API_KEY
-python -m cli.main "Pay my credit card bill"
-cat weights_n_biases.json
+# New session
+python -m cli.main "Hello, my name is Bob"
+
+# Resume session
+python -m cli.main --session-id <SESSION_ID> "What is my name?"
+
+# Config override
+python -m cli.main --provider minimax --model MiniMax-M2.1 "Hello"
+
+# Interactive mode
+python -m cli.main
 ```
 
-## Current Flow
+---
 
-1. User runs CLI with a query
-2. Orchestrator extracts intent → logs goal
-3. Orchestrator creates journey → logs steps
-4. BuilderTool executes (mock or real LLM)
-5. All data stored in `weights_n_biases.json`
+## Dependencies
 
-## Goal Types Supported
+```
+pydantic>=2.0
+anthropic>=0.18.0
+python-dotenv>=1.0.0
+deepagents>=0.0.1
+langgraph>=1.0.0
+requests
+```
 
-| Type | Keywords | Example |
-|------|----------|---------|
-| payment | pay, payment, bill | "Pay my credit card bill" |
-| travel | travel, trip, flight | "Plan a trip to Japan" |
-| research | research, find, search | "Research quantum computing" |
-| general | anything else | "Hello there" |
+---
 
 ## Next Steps (Priority Order)
 
-1. LangGraph integration (state machine) - deferred
-2. ~~Real LLM calls (OpenAI/Anthropic)~~ - ✅ DONE
-3. Skill B (Builder - day mode) - deferred
-4. Skill D (Auditor - verification) - deferred
-5. Skill F (Nightly replay/self-training) - deferred
+1. **Explorer Agent** - Analyze conversation history, create/update goals, generate reports
+2. **Agent Filesystem** - Use FilesystemBackend for agent file access
+3. **Session metadata** - Add created_at, last_message tracking
+4. **Interactive mode improvements** - Better UX
+
+---
+
+## Session Notes (from SESSION_NOTES.md)
+
+- DeepAgent integration working with MiniMax API
+- CLI supports: single query, interactive, session resume, export messages
+- Tools: log_goal, log_step, complete_journey, get_current_session, get_country_info
+- Conversation export to JSON works
+
+---
 
 ## Key Philosophy (from WORKFLOW.md)
 
@@ -62,19 +116,3 @@ cat weights_n_biases.json
 - K.I.S.S. (Keep It Stupidly Simple)
 - Defer features for iteration speed
 - Smallest incremental value for enhancements
-
-## Data Structure
-
-```
-weights_n_biases.json
-├── goals: [static list of user intents]
-└── journeys: [appended per request, each links to goal_id]
-```
-
-## Notes
-
-- All tests pass (`PYTHONPATH=. python tests/test_logger.py`)
-- CLI works for all 4 goal types
-- LLM integration complete - toggle with USE_REAL_LLM in .env
-- Using MiniMax M2.5 via Anthropic-compatible API
-- No LangGraph state machine yet
