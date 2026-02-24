@@ -1,56 +1,57 @@
 # Session Checkpoint
 
-## Completed (as of Feb 20, 2026)
+## Completed (as of Feb 21, 2026)
 
 | Component | File | Status |
 |-----------|------|--------|
 | DeepAgent Integration | `cli/main.py` | ✅ |
 | MiniMax API (Anthropic-compatible) | `.env`, `config.json` | ✅ |
-| Configurable Model/Provider | `config.json`, `config/__init__.py` | ✅ NEW |
-| JSON-based Persistent Storage | `storage/json_checkpointer.py` | ✅ NEW |
-| Session Persistence | `sessions/` directory | ✅ NEW |
+| Configurable Model/Provider | `config.json`, `config/__init__.py` | ✅ |
+| SQLite-based Persistent Storage | `langgraph.checkpoint.sqlite` | ✅ NEW |
+| Session Persistence | `sessions/checkpoints.db` | ✅ NEW |
 | CLI with session management | `cli/main.py` | ✅ |
 
 ---
 
-## MVP 001 Plan (Completed)
+## Migration: JSON → SQLite (Feb 21, 2026)
 
-### ✅ Task 1: Configurable Model/Provider
-- Created `config.json` with MiniMax, Anthropic, OpenAI, Custom providers
-- Created `config/__init__.py` with:
-  - `load_config()` - loads JSON config
-  - `get_provider_config()` - gets provider settings
-  - `get_model_config()` - gets model/provider defaults
-  - `create_chat_model()` - creates LangChain chat model
-- Priority: CLI flags > config.json > env vars
+### What Changed
+- **Removed:** Custom `JsonCheckpointSaver` implementation in `storage/`
+- **Removed:** `--list-sessions` CLI flag (query DB directly instead)
+- **Added:** `langgraph-checkpoint-sqlite` dependency
+- **Added:** Single SQLite database file (`sessions/checkpoints.db`)
 
-### ✅ Task 2: Persistent Storage
-- Created custom `JsonCheckpointSaver` class implementing `BaseCheckpointSaver`
-- Stores checkpoints to JSON files in `sessions/<thread_id>/`
-- Replaced `InMemorySaver` with `JsonCheckpointSaver`
-- Sessions persist across process restarts
-- Added `--list-sessions` to show stored sessions
+### Why
+- JSON was too noisy with extra metadata files
+- SQLite is cleaner, more efficient, and built-in to Python
+- Can query sessions directly with SQL if needed
+
+### Query Sessions Directly
+```python
+import sqlite3
+conn = sqlite3.connect("sessions/checkpoints.db")
+cur = conn.cursor()
+cur.execute("SELECT thread_id, checkpoint_id FROM checkpoints")
+```
 
 ---
 
 ## Current File Structure
 
 ```
-config.json              # Provider/model config (MiniMax default)
-config/__init__.py       # Config loader module
-storage/
-  __init__.py
-  json_checkpointer.py   # JsonCheckpointSaver class
-sessions/               # Persisted session data
-  <thread_id>/
-    checkpoints.json    # List of all checkpoints
-    <uuid>.json        # Checkpoint data
-    <uuid>.meta.json   # Metadata
-    writes.json        # Pending writes
-cli/main.py             # CLI with session management
+.env                      # API keys (MiniMax, Anthropic, etc.)
+config.json               # Provider/model config (MiniMax default)
+config/__init__.py        # Config loader module
+sessions/
+  checkpoints.db          # SQLite database (checkpoints + writes)
+cli/main.py               # CLI with session management
 agent/
-  logging_middleware.py
-  country_tool.py
+  logging_middleware.py   # Tools: log_goal, log_step, complete_journey
+  country_tool.py         # Tool: get_country_info
+tools/
+  llm_client.py
+  builder_tool.py
+  mock_tool.py
 schemas/
   goal.py
   journey.py
@@ -61,10 +62,7 @@ schemas/
 ## How to Run
 
 ```bash
-# List sessions
-python -m cli.main --list-sessions
-
-# New session
+# New session (one-shot)
 python -m cli.main "Hello, my name is Bob"
 
 # Resume session
@@ -75,6 +73,9 @@ python -m cli.main --provider minimax --model MiniMax-M2.1 "Hello"
 
 # Interactive mode
 python -m cli.main
+
+# Disable auto-export to conversation.json
+python -m cli.main --no-export "Hello"
 ```
 
 ---
@@ -87,6 +88,7 @@ anthropic>=0.18.0
 python-dotenv>=1.0.0
 deepagents>=0.0.1
 langgraph>=1.0.0
+langgraph-checkpoint-sqlite>=1.0.0
 requests
 ```
 
@@ -101,12 +103,11 @@ requests
 
 ---
 
-## Session Notes (from SESSION_NOTES.md)
+## Vector Search Options (Researched, Deferred)
 
-- DeepAgent integration working with MiniMax API
-- CLI supports: single query, interactive, session resume, export messages
-- Tools: log_goal, log_step, complete_journey, get_current_session, get_country_info
-- Conversation export to JSON works
+- **PostgreSQL** - Required for LangGraph Store with vector search (needs Docker)
+- **Chroma** - Local vector DB option (separate from SQLite)
+- **Deferred** - Keeping SQLite simple for now
 
 ---
 

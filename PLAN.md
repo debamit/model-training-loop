@@ -38,3 +38,37 @@ Journey:
 Once goals exist, the agent can run a scheduled exploration job to research other tool calls and options. In exploration mode (higher temperature) the aim is to discover alternative payment methods or different trip options, then update the `Weights-n-Biases.md` file with new journey paths.
 
 So next time the user asks about the same thing, the LLM can show additional options and may adjust which sources it prioritizes or tweak biases accordingly.
+
+
+
+<!-- AI x Crypto
+
+Every AI agent should be incentived to have their own keys  (obviously controlled by humans. Similar to how people are giving access to AI of their whole pc . THe whole openclaw x mac mini thing. A lot more security forward way is running openclaw in a docker.)
+
+A better approach is layered stack 
+where openclaw when its doing anything sensitive 
+
+using funcgemma to make tool calls 
+all tool calls are ERC8004 agents
+where initial query is used to do a semantic searh against the 8004 registry and pull in some relevant tool or agents .
+
+These agents take in the users query or request 
+and do the basic following flow
+The check the request and 
+ask any follow up question and request to other information that resides in their computer or mobile device that they may needs access to and help them out with the request.
+
+Then they create a rough plan and give a very hight level view of 
+what the ToS are and what they can expect from the service agent
+and how much it will cost etc  to the users agent and what timeline the
+service will be delivered
+
+Users agent checks it ask a cryptographic approval from the user 
+if the user agrees to the cost and ToS.
+
+Then the service provider has to have some staked ETH to provide assurance to the user in case they want to cause any harm to the user using prompt injection technique this fund in the staking contract can be slashed using protocols like Eigen layer.
+
+Then when the service is provided all three parties including 
+the users agent, service provider agent and Eigen layer ASV agent sign off and the payment is done atomically in the same block -->
+
+if there is a disagreement EIGEN is forkable anyway (inter subjective Token)
+

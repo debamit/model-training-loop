@@ -12,12 +12,6 @@ load_dotenv("/home/debamit007/model-training-loop/.env")
 from config import create_chat_model
 from deepagents import create_deep_agent
 from langgraph.checkpoint.sqlite import SqliteSaver
-from agent.logging_middleware import (
-    log_goal,
-    log_step,
-    complete_journey,
-    get_current_session,
-)
 from agent.country_tool import get_country_info
 
 
@@ -51,53 +45,23 @@ def export_messages(agent, config, filepath: str):
     print(f"Messages exported to {filepath}")
 
 
-def detect_goal_type(user_input: str) -> str:
-    """Detect the goal type from user input."""
-    user_lower = user_input.lower()
-
-    if "pay" in user_lower or "payment" in user_lower or "bill" in user_lower:
-        return "payment"
-    elif "travel" in user_lower or "trip" in user_lower or "flight" in user_lower:
-        return "travel"
-    elif "research" in user_lower or "find" in user_lower or "search" in user_lower:
-        return "research"
-    else:
-        return "general"
-
-
 def create_agent(checkpointer=None, chat_model=None):
-    """Create a deep agent with logging tools."""
+    """Create a deep agent."""
     if chat_model is None:
         from config import create_chat_model
 
         chat_model = create_chat_model()
-    system_prompt = """You are a helpful personal AI assistant. 
+    system_prompt = """You are a helpful personal AI assistant.
 
-When the user tells you something they want to do (like "pay my bill", "plan a trip", "research something"):
-1. First, use the log_goal tool to log their goal with the appropriate goal_type
-2. Then proceed to help them
-3. Use log_step to track important steps in helping them
-4. When done, use complete_journey to finish
+For travel-related queries, use the get_country_info tool to get country details like capital, population, languages, currencies, etc.
 
-Goal types:
-- payment: for anything related to payments, bills, finances
-- travel: for trip planning, flights, hotels
-- research: for information gathering, searches
-- general: for everything else
-
-For travel planning, use the get_country_info tool to get country details like capital, population, languages, currencies, etc.
-
-Always be helpful and friendly. Use available tools (read_file, write_file, etc.) to assist the user."""
+Always be helpful and friendly."""
 
     agent = create_deep_agent(
         system_prompt=system_prompt,
         checkpointer=checkpointer,
         model=chat_model,
         tools=[
-            log_goal,
-            log_step,
-            complete_journey,
-            get_current_session,
             get_country_info,
         ],
     )
