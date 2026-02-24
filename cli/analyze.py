@@ -13,6 +13,8 @@ from agent.conversation_analyzer import (
     analyze_conversations,
     get_all_sessions,
     get_session_messages,
+    get_session_date,
+    load_existing_analysis,
 )
 
 
@@ -35,22 +37,57 @@ def list_sessions():
     print()
 
 
-def analyze_session(session_id: str, output_dir: str = DEFAULT_OUTPUT_DIR):
-    """Analyze a single session."""
-    print(f"Analyzing session: {session_id}")
+def analyze_session(session_ids: list[str], output_dir: str = DEFAULT_OUTPUT_DIR):
+    """Analyze one or more sessions, merging with existing analysis by date."""
+    if not session_ids:
+        print("No session IDs provided.")
+        return
 
-    result = analyze_conversations([session_id])
+    print(f"Analyzing session(s): {', '.join(session_ids)}")
 
-    output_path = Path(output_dir) / f"chat_Analysis_{result.date}.json"
+    sessions_by_date = {}
+    for session_id in session_ids:
+        session_date = get_session_date(session_id)
+        if session_date not in sessions_by_date:
+            sessions_by_date[session_date] = []
+        sessions_by_date[session_date].append(session_id)
+
+    all_source_sessions = []
+    all_goals = []
+
+    for date, date_sessions in sessions_by_date.items():
+        existing = load_existing_analysis(date, output_dir)
+        existing_goals = existing.goals if existing else None
+        existing_sessions = existing.source_sessions if existing else []
+
+        result = analyze_conversations(date_sessions, existing_goals=existing_goals)
+
+        all_source_sessions.extend(existing_sessions)
+        all_source_sessions.extend(result.source_sessions)
+
+        for goal in result.goals:
+            all_goals.append(goal)
+
+    output_path = (
+        Path(output_dir) / f"chat_Analysis_{datetime.now().strftime('%Y-%m-%d')}.json"
+    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
+    output_data = {
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "analyzed_at": datetime.now().isoformat(),
+        "source_sessions": list(set(all_source_sessions)),
+        "goals": [g.model_dump() for g in all_goals],
+    }
+
     with open(output_path, "w") as f:
-        json.dump(result.model_dump(), f, indent=2, default=str)
+        json.dump(output_data, f, indent=2, default=str)
 
     print(f"Analysis saved to: {output_path}")
-    print(f"Goals found: {len(result.goals)}")
+    print(f"Total sessions: {len(all_source_sessions)}")
+    print(f"Goals found: {len(all_goals)}")
 
-    for goal in result.goals:
+    for goal in all_goals:
         print(f"  - {goal.goal}: {len(goal.conversations)} conversation(s)")
 
 
@@ -113,10 +150,10 @@ def main():
     )
 
     parser.add_argument(
-        "session_id",
-        nargs="?",
+        "session_ids",
+        nargs="*",
         type=str,
-        help="Session ID to analyze",
+        help="Session ID(s) to analyze (multiple allowed)",
     )
     parser.add_argument(
         "--list",
@@ -164,8 +201,8 @@ def main():
         analyze_all(args.output_dir)
         return
 
-    if args.session_id:
-        analyze_session(args.session_id, args.output_dir)
+    if args.session_ids:
+        analyze_session(args.session_ids, args.output_dir)
         return
 
     parser.print_help()

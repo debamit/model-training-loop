@@ -17,6 +17,7 @@ Rules:
    Eg: "plan a road trip" and "trip from LA to NY" = same goal
    Eg: "book flight" and "research hotels" = different goals
 2. If conversation has multiple distinct goals, split into separate goal entries
+3. If existing goals are provided, decide which new conversations fit existing goals (>80% similar) and which need new goal entries
 
 For each conversation, extract:
 - steps: tool calls made, reasoning steps, final answer
@@ -83,11 +84,44 @@ def get_all_sessions() -> list[str]:
     return threads
 
 
+def get_session_date(session_id: str) -> Optional[str]:
+    """Get the date of a session from checkpoint metadata (YYYY-MM-DD)."""
+    import sqlite3
+
+    conn = sqlite3.connect("sessions/checkpoints.db")
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT checkpoint_id FROM checkpoints WHERE thread_id = ? ORDER BY checkpoint_id ASC LIMIT 1",
+        (session_id,),
+    )
+    row = cur.fetchone()
+    conn.close()
+
+    if row and row[0]:
+        ckpt_id = row[0]
+        timestamp_part = ckpt_id.split("-")[0]
+        try:
+            ts = int(timestamp_part, 16)
+            dt = datetime.fromtimestamp(ts / 1000)
+            return dt.strftime("%Y-%m-%d")
+        except (ValueError, IndexError):
+            pass
+
+    return datetime.now().strftime("%Y-%m-%d")
+
+
 def analyze_conversations(
     session_ids: list[str],
     model: Optional[object] = None,
+    existing_goals: Optional[list[GoalGroup]] = None,
 ) -> AnalysisOutput:
-    """Analyze conversations and group by goals."""
+    """Analyze conversations and group by goals.
+
+    Args:
+        session_ids: List of session IDs to analyze
+        model: Chat model to use (default: from config)
+        existing_goals: Existing goals to match against (for merging)
+    """
     if model is None:
         model = create_chat_model()
 
@@ -110,9 +144,25 @@ def analyze_conversations(
             goals=[],
         )
 
-    user_prompt = f"""Analyze these conversations and group them by goal. Output JSON:
+    user_prompt_parts = []
 
-conversations:
+    if existing_goals:
+        existing_goals_json = json.dumps(
+            [
+                {
+                    "goal": g.goal,
+                    "conversation_ids": [c.conversation_id for c in g.conversations],
+                }
+                for g in existing_goals
+            ],
+            indent=2,
+        )
+        user_prompt_parts.append(
+            f"EXISTING GOALS (use 80% similarity threshold to match new conversations to these goals):\n{existing_goals_json}"
+        )
+
+    user_prompt_parts.append(
+        f"""NEW CONVERSATIONS TO ANALYZE:
 {json.dumps(conversations_data, indent=2)}
 
 Output format:
@@ -137,6 +187,12 @@ Output format:
     }}
   ]
 }}"""
+    )
+
+    user_prompt = (
+        "Analyze these conversations and group them by goal. Output JSON:\n\n"
+        + "\n\n".join(user_prompt_parts)
+    )
 
     response = model.invoke(
         [
@@ -209,5 +265,67 @@ Output format:
         date=datetime.now().strftime("%Y-%m-%d"),
         analyzed_at=datetime.now().isoformat(),
         source_sessions=session_ids,
+        goals=goals,
+    )
+
+
+def load_existing_analysis(
+    date: str, output_dir: str = "./analysis"
+) -> Optional[AnalysisOutput]:
+    """Load existing analysis file for a given date."""
+    from pathlib import Path
+
+    filepath = Path(output_dir) / f"chat_Analysis_{date}.json"
+    if not filepath.exists():
+        return None
+
+    with open(filepath) as f:
+        data = json.load(f)
+
+    goals = []
+    for goal_data in data.get("goals", []):
+        conversations = []
+        for conv in goal_data.get("conversations", []):
+            steps = []
+            for step in conv.get("steps", []):
+                step_input = step.get("input")
+                if isinstance(step_input, dict):
+                    step_input = json.dumps(step_input)
+                step_output = step.get("output")
+                if isinstance(step_output, dict):
+                    step_output = json.dumps(step_output)
+
+                steps.append(
+                    Step(
+                        type=step.get("type", "unknown"),
+                        tool=step.get("tool"),
+                        input=step_input,
+                        output=step_output,
+                        content=step.get("content"),
+                    )
+                )
+
+            conversations.append(
+                ConversationEntry(
+                    conversation_id=conv.get("conversation_id", ""),
+                    steps=steps,
+                    tools_used=conv.get("tools_used", []),
+                    sources_checked=conv.get("sources_checked", []),
+                    user_preference=conv.get("user_preference", ""),
+                    user_context=conv.get("user_context", ""),
+                )
+            )
+
+        goals.append(
+            GoalGroup(
+                goal=goal_data.get("goal", ""),
+                conversations=conversations,
+            )
+        )
+
+    return AnalysisOutput(
+        date=data.get("date", date),
+        analyzed_at=data.get("analyzed_at", ""),
+        source_sessions=data.get("source_sessions", []),
         goals=goals,
     )

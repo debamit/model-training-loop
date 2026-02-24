@@ -1,37 +1,27 @@
-# MVP 002 - Goal/Journey Extractor
+# MVP 002 - Conversation Analysis Agent
 
 ## Overview
 
-Extract Goals and Journeys from conversation history. This is a prerequisite for the Explorer Agent - it creates the data analyzed_conversation that the Explorer will analyze and improve.
-
-## Single-Stage Pipeline
-
-```
-Conversation → chat_Analysis_{date}.json (intermediate)
-```
-
-### Stage 1: Extract (this MVP)
-- Input: conversation.json OR --session-id (from SQLite)
-- Output:  Analysis file
-- LLM analyzes conversation, extracts goals/journeys
-
-
----
+Analyze conversations from SQLite, group by goals, output to `chat_Analysis_{date}.json`.
 
 ## Input
 
 ### CLI Interface
 
 ```bash
-# From exported conversation.json
-python -m cli.extract-goals conversation.json
+# Analyze single conversation
+python -m cli.analyze <conversation_id>
 
-# From session ID (SQLite)
-python -m cli.extract-goals --session-id <SESSION_ID>
+# Analyze all conversations from a day
+python -m cli.analyze --day 2026-02-23
 
-# With custom output directory
-python -m cli.extract-goals conversation.json --output-dir ./my_goals
+# List available session IDs
+python -m cli.analyze --list
 ```
+
+### Default Options
+- Output directory: `./analysis/` (configurable via `--output-dir`)
+- Overwrites existing files for same date
 
 ---
 
@@ -40,32 +30,25 @@ python -m cli.extract-goals conversation.json --output-dir ./my_goals
 ### File Structure
 
 ```
-chat_Analysis_2026-02-23.json 
+analysis/
+├── chat_Analysis_2026-02-23.json
+├── chat_Analysis_2026-02-24.json
+└── ...
 ```
 
-## chat_Analysis_{date}.json
-
-Here have the goals and journeys extracted be seperated from the user preference and user context.
+### JSON Schema
 
 ```json
 {
-  "analysis_date": "2026-02-23T10:00:00Z",
-  "source_type": "conversation_file | session_id",
-  "source_id": "conversation.json | session_xxx",
-  "goals_extracted": [
+  "date": "2026-02-23",
+  "analyzed_at": "2026-02-23T14:30:00Z",
+  "source_sessions": ["session_001", "session_002"],
+  "goals": [
     {
-      "user_intent": "Plan a road trip from LA to NY",
-      "category": "personal",
-      "domain": "travel",
-      "constraints": ["budget: $500", "timeframe: 5 days"],
-      "user_preferences": ["prefer scenic routes", "likes national parks"],
-      "matching_decision": "new_goal",
-      "similarity_score": null,
-      "reasoning": "User is planning a personal travel trip, no existing travel goal found",
-      "journeys": [
+      "goal": "road trip",
+      "conversations": [
         {
-          "conversation_id": "session_xxx",
-          "timestamp": "2026-02-23T10:00:00Z",
+          "conversation_id": "session_001",
           "steps": [
             {
               "type": "tool_call",
@@ -83,7 +66,9 @@ Here have the goals and journeys extracted be seperated from the user preference
             }
           ],
           "tools_used": ["web_search", "get_country_info"],
-          "sources_checked": ["nps.gov", "wikipedia"]
+          "sources_checked": ["nps.gov", "wikipedia"],
+          "user_preference": "prefer scenic routes",
+          "user_context": "user location: LA"
         }
       ]
     }
@@ -93,51 +78,44 @@ Here have the goals and journeys extracted be seperated from the user preference
 
 ---
 
-
----
-
-## Extraction Logic (LLM-based)
-
-### Static Prompt Instructions
+## LLM Prompt for Grouping
 
 ```
-You are analyzing a conversation between a user and AI assistant.
+You are analyzing conversations between a user and AI assistant.
 
-1. Identify the user's goal(s) - what were they trying to accomplish?
-2. Extract any constraints/preferences they mentioned
-3. Document the journey: tool calls made, reasoning steps, final answer
-4. Decide: Does this match an existing goal (semantic similarity >80%)?
-   If yes, append as new journey. If no, create new goal.
-5. Classify as 'personal' or 'work' based on conversation context
-6. Extract domain: travel, payment, research, or general
-```
+Group conversations by GOAL. A goal represents what the user was trying to accomplish.
 
-### Matching Logic
-
-- **Threshold**: 80% semantic similarity
-- **If score >= 80%**: Append journey to existing goal
-- **If score < 80%**: Create new goal (auto-increment ID)
-
----
-
-## What's Included in Journey
+Rules:
+1. If user_intent is >80% semantically similar to an existing goal, add to that goal group
+2. Eg: "plan a road trip" and "trip from LA to NY" = same goal
+3. Eg: "book flight" and "research hotels" = different goals
+4. If conversation has multiple distinct goals, split into separate goal entries
 
 For each conversation, extract:
-
-1. **Final answer** - The assistant's response
-2. **Tool calls** - All tools invoked (name, input, output)
-3. **Reasoning steps** - LLM's chain-of-thought (if available)
-4. **User constraints** - Budget, timeline, requirements
-5. **User preferences** - Likes, dislikes, priorities
-6. **User context** - Their identity , their philosophy or other relevant context
-7. **Sources checked** - URLs, APIs, data sources used
-
+- steps: tool calls made, reasoning, final answer
+- tools_used: list of tools invoked
+- sources_checked: URLs/data sources used
+- user_preference: any preferences revealed
+- user_context: any context provided (location, payment info, etc)
+```
 
 ---
 
-## Philosophy
+## Implementation
 
-- **On-demand + Scheduled**: User triggers manually, or can be run on schedule
-- **Audit trail**: Keep intermediate analysis file for debugging
-- **Extensible**: Static prompt can be tweaked later
-- **Transparent**: Include LLM reasoning in intermediate output
+### Files to Create/Modify
+
+```
+cli/
+└── analyze.py              # CLI entry point
+
+agent/
+└── conversation_analyzer.py # LLM-based analysis
+
+schemas/
+└── analysis.py             # Pydantic models
+```
+
+### Dependencies
+- Existing: `deepagents`, `langgraph`, `sqlite`
+- New: None required
