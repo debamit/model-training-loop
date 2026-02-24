@@ -65,11 +65,25 @@ export MINIMAX_API_KEY="sk-cp-pXxGHLe-..."
         └── SKILL.md             # Intent classification skill
 ```
 
+---
+
+## Project Philosophy
+
+### Skills Architecture
+
+Skills are self-contained in `.deepagents/skills/<skill-name>/SKILL.md`.
+- **No Python code** unless enforcing explicit user constraints
+- Use built-in tools: `read_file`, `write_file`, `shell`, conversation
+- See `skill-author` skill for how to create new skills
+
 ### Available Skills
 
 | Skill | Purpose | Trigger |
 |-------|---------|---------|
-| `conversation-analyzer` | Classify intent (Query/Action/Preference), measure quality (Sentiment, Urgency, Clarity, Follow-up) | "analyze conversation", "classify intent" |
+| `conversation-analyzer` | Classify intent (Query/Action/Preference), measure quality | "analyze conversation", "classify intent" |
+| `user-context-simulator` | Manage 4-layer user context (Physical, Mental, User Context, Explicit Preferences) | "manage user context", "simulate user", "preferences" |
+| `conversation-simulator` | Simulate multi-turn conversations with bots via API | "simulate conversation", "test bot", "replay conversation" |
+| `skill-author` | How to create new skills | "create skill", "write skill" |
 
 ### How Skills Work
 1. Agent detects task matches skill trigger
@@ -85,8 +99,12 @@ export MINIMAX_API_KEY="sk-cp-pXxGHLe-..."
 .env                      # API keys (MiniMax)
 config.json               # Provider/model config
 config/__init__.py        # Config loader
+user_context.json         # User preferences/context (4 layers)
 sessions/
   checkpoints.db          # SQLite database
+mock_bot/
+  bot.py                  # Mock bot for testing
+  index.html              # Mock bot info page
 cli/
   main.py                 # CLI entry point
   analyze.py              # Multi-session analysis
@@ -97,8 +115,14 @@ agent/
 .deepagents/
   AGENTS.md               # Agent memory
   skills/
+    skill-author/
+      SKILL.md            # How to create skills
     conversation-analyzer/
-      SKILL.md            # Skill definition
+      SKILL.md            # Intent classification
+    user-context-simulator/
+      SKILL.md            # User context management
+    conversation-simulator/
+      SKILL.md            # Bot conversation simulation
 analysis/
   chat_Analysis_*.json   # Goal-based analysis
   intent_analysis_*.json # Intent classification
@@ -191,16 +215,15 @@ requests
 
 ## Next Steps (Priority Order)
 
-1. **Add more skills:**
-   - `conversation-simulator` - Act as user, test bots
-   - `user-context-simulator` - Store/retrieve user preferences
-   - `evidence-builder` - Gather evidence for answers
+1. **Evidence Builder** - Gather evidence for answers (github repos, links, PDFs, swaggers)
 
-2. **Improve conversation-analyzer:**
-   - Batch analyze multiple sessions
-   - PID-style deviation tracking
+2. ~~`conversation-simulator`~~ - ✅ Done (tested with mock bot)
 
-3. **Skill Creator** - Use built-in skill to create new skills
+3. ~~`user-context-simulator`~~ - ✅ Done (4-layer: Physical, Mental, User Context, Explicit Preferences)
+
+4. ~~`skill-author`~~ - ✅ Done (meta-skill for creating skills)
+
+5. **Skill Creator** - Use built-in skill to create new skills
 
 ---
 

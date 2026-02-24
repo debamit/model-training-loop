@@ -12,11 +12,26 @@ This is a personal AI assistant CLI built on LangChain DeepAgents with SQLite ch
 - `sessions/checkpoints.db` - SQLite database storing conversation checkpoints
 - `analysis/` - Directory for analysis output
 
+## User Preferences
+
+- Prefers concise answers (4 lines or less unless detail is requested)
+
 ## Skills
 
 This agent has access to skills in `.deepagents/skills/`:
 
 - `conversation-analyzer/` - Analyze conversations for intent and quality
+- `user-context-simulator/` - Manage 4-layer user context
+- `conversation-simulator/` - Simulate conversations with bots via API
+- `skill-author/` - How to create new skills
+
+## User Context
+
+User preferences stored in `user_context.json`:
+- Physical: age, sex, notes
+- Mental: mood, values, biases, likes, dislikes, experience
+- User Context: bot-specific info (e.g., road_trip.car_type)
+- Explicit Preferences: communication_style, response_length
 
 ## Available Tools
 

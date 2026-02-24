@@ -55,4 +55,7 @@ Thumbs.db
 *.swp
 *~
 weights_n_biases.json
+user_context.json
 sessions
+analysis
+mock_bot
