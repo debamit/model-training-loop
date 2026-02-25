@@ -13,6 +13,7 @@
 | Conversation Analyzer Skill | `.deepagents/skills/conversation-analyzer/SKILL.md` | ✅ NEW |
 | DeepAgents CLI Integration | `~/.deepagents/config.toml` | ✅ NEW |
 | Multi-session Analysis | `cli/analyze.py` | ✅ NEW |
+| Conversation Simulator (LLM-based) | `.deepagents/skills/conversation-simulator/SKILL.md` | ✅ NEW |
 
 ---
 
@@ -37,7 +38,7 @@
 ```toml
 [models.providers.anthropic]
 base_url = "https://api.minimax.io/anthropic"
-api_key_env = "MINIMAX_API_KEY"
+api_key_env = "ANTHROPIC_API_KEY"
 models = ["MiniMax-M2.1", "MiniMax-M2.5"]
 
 [models]
@@ -49,7 +50,7 @@ timeout = 300
 
 **API Key** (set in environment):
 ```bash
-export MINIMAX_API_KEY="sk-cp-pXxGHLe-..."
+export ANTHROPIC_API_KEY="sk-cp-pXxGHLe-..."
 ```
 
 ---
