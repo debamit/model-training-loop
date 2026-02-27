@@ -33,3 +33,6 @@ Two-pass workflow: **Builder** (fast answers) → **Auditor** (skeptical verific
 
 ## Current State
 - Planning complete, implementation pending
+
+## Known Issues
+- glob tool with `**` (recursive) pattern doesn't work - use single-level `*` instead (e.g., `specs/*` not `specs/**/*`)
