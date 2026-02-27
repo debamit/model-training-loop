@@ -36,3 +36,8 @@ Two-pass workflow: **Builder** (fast answers) → **Auditor** (skeptical verific
 
 ## Known Issues
 - glob tool with `**` (recursive) pattern doesn't work - use single-level `*` instead (e.g., `specs/*` not `specs/**/*`)
+
+## Skill Authoring Conventions
+- **Always use relative paths** in skills, never absolute paths (e.g., `specs/` not `/home/user/project/specs/`)
+- Location hints should say: "relative to the current working directory where the skill is run"
+- This makes skills portable across different computers

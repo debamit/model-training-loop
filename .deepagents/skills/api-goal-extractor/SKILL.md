@@ -25,7 +25,7 @@ Ask user for:
 - File path to API spec (JSON/YAML) - use relative path from working directory
 - Or URL to the spec
 
-If user says "figure it out", check common locations (use relative paths from working directory `/home/debamit007/model-training-loop`):
+If user says "figure it out", check common locations (use relative paths from the current working directory):
 - `specs/`
 - `*.json`
 - Use `specs/*` pattern (NOT `specs/**/*` - recursive glob is broken)
@@ -65,7 +65,7 @@ Generate filename from spec name by appending `_goals.json`:
 - `specs/shopify.json` → `specs/shopify_goals.json`
 - `specs/weather.json` → `specs/weather_goals.json`
 
-**Location hint:** Always save to `specs/` directory in the working directory `/home/debamit007/model-training-loop`.
+**Location hint:** Always save to `specs/` directory (relative to the current working directory where the skill is run).
 
 Save format:
 ```json
