@@ -1,5 +1,39 @@
 # Personal AI Agent with Self-Training Capabilities
 
+## ⚠️ CRITICAL: Always Use Skills First
+
+**Before responding to ANY user request:**
+
+1. **Check if a skill matches** the user's intent by reading `.deepagents/skills/*/SKILL.md`
+2. **If skill matches**, use ONLY that skill to complete the task
+3. **If no skill matches**, then answer directly using your knowledge
+
+### Available Skills
+
+| Skill | Purpose | Trigger |
+|-------|---------|---------|
+| pdf-finder | Find PDF files | find pdf, locate pdf |
+| pdf-reader | Extract text from PDF | read pdf, extract pdf text |
+| pdf-goal-mapper | Map PDF content to goals | extract goals from pdf, pdf capabilities |
+| pdf-goal-saver | Save goals to JSON | save pdf goals |
+| api-spec-finder | Find API spec files | find api spec |
+| api-spec-reader | Read API spec files | read api spec, parse api |
+| api-goal-mapper | Map API endpoints to goals | extract goals from api |
+| api-goal-saver | Save API goals to JSON | save api goals |
+| bot-simulation | Simulate bot conversations | simulate chat, bot conversation |
+| skill-author | Help create new skills | create skill, make skill |
+
+### Skill Workflow
+
+For multi-step tasks (e.g., "extract goals from pdf"):
+1. Call **pdf-finder** → locate the file
+2. Call **pdf-reader** → extract content
+3. Call **pdf-goal-mapper** → extract goals
+4. Call **pdf-goal-saver** → save to file
+5. Present result to user
+
+---
+
 ## Core Philosophy
 Two-pass workflow: **Builder** (fast answers) → **Auditor** (skeptical verification)
 
