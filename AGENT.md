@@ -37,6 +37,51 @@ Two-pass workflow: **Builder** (fast answers) → **Auditor** (skeptical verific
 ## Known Issues
 - glob tool with `**` (recursive) pattern doesn't work - use single-level `*` instead (e.g., `specs/*` not `specs/**/*`)
 
+## Skill Authoring for Smaller Models (14B and under)
+
+### Key Principles
+- **One action per skill** - Each skill does exactly ONE thing. No multi-step workflows embedded in a single skill.
+- **Explicit triggers** - Triggers should be specific and mutually exclusive. Avoid overlap.
+- **Minimal context** - Keep SKILL.md under 100 lines. Smaller models parse less reliably with longer context.
+- **Composability over convenience** - Model calls skills in sequence rather than a "master" skill that does everything.
+- **No conditional logic** - Skills describe one path. Let the model handle branching by choosing different skills.
+
+### Skill Structure Template
+```markdown
+---
+name: <action-name>
+description: <one-line what this does>
+trigger: <specific phrases that match this skill>
+---
+
+# <Action Name>
+
+## Input
+- What the skill needs to work
+
+## Code
+<minimal code block>
+
+## Output
+- What this skill returns
+```
+
+### Anti-Patterns to Avoid
+- ❌ "Analyze and extract" (two actions)
+- ❌ Trigger: "help with pdf" (too vague)
+- ❌ IF/ELSE logic inside skill
+- ❌ Multi-step instructions in one skill
+
+### Example: Refactored PDF Skills
+```
+pdf-finder/       → find PDF files (1 action)
+pdf-reader/       → extract text (1 action)
+pdf-goal-mapper/  → analyze → goals (1 action)
+pdf-goal-saver/   → save to JSON (1 action)
+```
+
+When user says "analyze pdf", model calls: finder → reader → mapper → saver in sequence.
+
 ## Skill Authoring Conventions
 - **Always use relative paths** in skills, never absolute paths (e.g., `specs/` not `/home/user/project/specs/`)
 - Location hints should say: "relative to the current working directory where the skill is run"
