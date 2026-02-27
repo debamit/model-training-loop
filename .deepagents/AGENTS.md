@@ -36,21 +36,9 @@ For multi-step tasks (e.g., "extract goals from pdf"):
 
 ## Project: Model Training Loop
 
-This is a personal AI assistant CLI built on LangChain DeepAgents with SQLite checkpointing.
-
-## Key Files
-
-- `cli/main.py` - Main CLI entry point
-- `sessions/checkpoints.db` - SQLite database storing conversation checkpoints
-- `.deepagents/skills/` - Available skills
-
-## User Preferences
-
-- Prefers concise answers (4 lines or less unless detail is requested)
-
 ## Available Tools
 
-**Core file tools:**
+**File tools:**
 - read_file: Read file contents (absolute paths)
 - write_file: Create or overwrite files
 - edit_file: Modify existing files
@@ -59,12 +47,14 @@ This is a personal AI assistant CLI built on LangChain DeepAgents with SQLite ch
 - grep: Search file contents
 
 **Other tools:**
-- execute: Run shell/Python commands
-- task: Spawn subagents for complex tasks
+- shell: Run shell/Python commands
+- web_search: Search the web
 - http_request: Make HTTP API calls
-- get_country_info: Get country details
+- task: Spawn subagents for complex tasks
+- get_country_info: Get country details (custom tool)
 
-## Data Sources
+## Key Files
 
-- Sessions stored in SQLite at `sessions/checkpoints.db`
-- Each session has a thread_id
+- `cli/main.py` - Main CLI entry point
+- `sessions/checkpoints.db` - SQLite database storing conversation checkpoints
+- `.deepagents/skills/` - Available skills
