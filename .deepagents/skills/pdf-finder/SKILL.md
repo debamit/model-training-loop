@@ -14,7 +14,7 @@ If user specifies a filename, use it. Otherwise search broadly.
 
 ## Step 2: Search common locations
 
-Check these directories (working dir: `/home/debamit007/model-training-loop`):
+Check these directories (working dir: current directory):
 - Current directory
 - `knowledge-base/pdf/`
 - `documents/`

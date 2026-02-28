@@ -71,7 +71,7 @@ Stop when the goal is achieved. Do not use a fixed number of turns.
 
 Generate timestamp using: date +%Y%m%d_%H%M%S
 
-Save to: /home/debamit007/model-training-loop/sessions/simulated_conversation_{timestamp}.json
+Save to: sessions/simulated_conversation_{timestamp}.json
 
 Format:
 ```json

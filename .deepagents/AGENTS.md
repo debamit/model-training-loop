@@ -33,8 +33,7 @@ RIGHT (read skill first, then execute):
 | pdf-reader | Extract text from PDF | read pdf, extract pdf text |
 | pdf-goal-mapper | Map PDF content to goals | extract goals from pdf |
 | pdf-goal-saver | Save goals to JSON | save pdf goals |
-| api-spec-finder | Find API spec files | find api spec |
-| api-spec-reader | Read API spec files | read api spec |
+| api-spec-handler | Find and read API spec files | find api spec, read api spec |
 | api-goal-mapper | Map API endpoints to goals | extract goals from api |
 | api-goal-saver | Save API goals to JSON | save api goals |
 | bot-simulation | Simulate bot conversations | simulate chat |
